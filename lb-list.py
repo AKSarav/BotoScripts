@@ -54,7 +54,7 @@ def gettargethealth(arn):
     inss=elb.describe_target_health(TargetGroupArn=arn)
     instanceids=[]
     for ins in inss["TargetHealthDescriptions"]:
-        ins["Na"]=getinstancename(ins['Target']['Id'])
+        ins["Name"]=getinstancename(ins['Target']['Id'])
         instanceids.append(ins['Target']['Id'])
         print (ins)
     # getinstancenames(instanceids)
