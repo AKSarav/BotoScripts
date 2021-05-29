@@ -28,26 +28,28 @@ def getinstancename(instanceid):
     return resultset
              
 
-def getinstancehealth(lbname):
-    pprint.pprint(elb.describe_instance_health(LoadBalancerName=lbname)["InstanceStates"])
+def getinstancehealth(lbname,instanceid):
+    instancestate=elb.describe_instance_health(
+            LoadBalancerName=lbname,
+            Instances = [{
+                'InstanceId' : instanceid
+            }]
+            )
+    return instancestate['InstanceStates'][0]['State']
 
 lbs = elb.describe_load_balancers(PageSize=400)
-
-print (lbs)
 
 for lb in lbs["LoadBalancerDescriptions"]:
     print("\n"*2)
     print ("-"*6)
     print("Name:",lb["LoadBalancerName"])
     print("HealthCheck:",lb["HealthCheck"])
-    print()
-    print("InstanceHealth:",getinstancehealth(lb["LoadBalancerName"]))
-    print("Instance Info")
+    print("Instance Info:")
     if len(lb["Instances"]) > 0:
         for instance in lb["Instances"]:
-            # print (instance["InstanceId"])
             instance.update(getinstancename(instance["InstanceId"]))
+            instance['Health']=getinstancehealth(lb["LoadBalancerName"], instance["InstanceId"])
             print (instance)
     else:
-        print("Instances:",lb["Instances"])
+        print("Instance List is Empty, Or no Instance is mapped")
     
