@@ -59,4 +59,3 @@ for lb in lbs["LoadBalancers"]:
     for tgs in gettargetgrouparns(lb["LoadBalancerArn"]):
         gettargethealth(tgs)
     
-
